@@ -6,7 +6,7 @@ using Masareefy.Helpers;
 
 namespace Masareefy.Views
 {
-    /// <summary>Screen 5: choose a report, see the summary + donut + bar charts.</summary>
+    /// <summary>صفحة التقارير وملخصها ورسومها التجريبية.</summary>
     public class ReportsView : BaseView
     {
         private readonly ComboBox _type = new ComboBox();
@@ -14,11 +14,12 @@ namespace Masareefy.Views
         private readonly ComboBox _year = new ComboBox();
         private readonly Label _period;
 
+        // بنجهز فلاتر الفترة وبطاقات التقرير.
         public ReportsView()
         {
             var header = Theme.Header("التقارير");
 
-            // ----- filters card (left to right: button, year, month, type) -----
+            // فلاتر نوع التقرير والشهر والسنة.
             var filterWrap = new Panel { Height = 104, Padding = new Padding(28, 4, 28, 8), BackColor = Color.Transparent, RightToLeft = RightToLeft.Yes };
             var filterCard = new RoundedPanel { Padding = new Padding(12, 10, 12, 10) };
             var flow = new FlowLayoutPanel { FlowDirection = FlowDirection.RightToLeft, WrapContents = false, BackColor = Color.Transparent, RightToLeft = RightToLeft.Yes };
@@ -36,12 +37,12 @@ namespace Masareefy.Views
             var show = new RoundedButton { Text = "عرض التقرير", Size = new Size(170, 44), Margin = new Padding(8, 26, 8, 0) };
             show.Click += (s, e) => UpdatePeriod();
             flow.Controls.Add(show);
-            // RightToLeft flow: first added = right side. We want the button on the LEFT, so it is added last.
+            // زر العرض بيتضاف آخر واحد عشان يظهر في الطرف الشمال.
 
             filterCard.Controls.Add(flow); flow.Dock = DockStyle.Fill;
             filterWrap.Controls.Add(filterCard); filterCard.Dock = DockStyle.Fill;
 
-            // ----- 3 cards (left to right: summary, donut, bars) -----
+            // كروت الملخص والرسم الدائري والرسم العمودي.
             var body = new Panel { Padding = new Padding(20, 0, 20, 20), BackColor = Color.Transparent, AutoScroll = true };
             var row = new TableLayoutPanel { ColumnCount = 3, RowCount = 1, BackColor = Color.Transparent, AutoSize = false };
             row.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 26f));
@@ -50,7 +51,7 @@ namespace Masareefy.Views
             row.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
             row.MinimumSize = new Size(1050, 400);
 
-            // summary
+            // ملخص ثابت للتقرير التجريبي.
             var sum = new RoundedPanel { Dock = DockStyle.Fill, Padding = new Padding(16), Margin = new Padding(8), MinimumSize = new Size(150, 300) };
             var sumTitle = Theme.Lbl("ملخص التقرير", 12, true, Theme.Ink, Align.Start); sumTitle.Height = 34;
             _period = Theme.Lbl("", 9, false, Theme.Muted, Align.Start); _period.Height = 24;
@@ -63,7 +64,7 @@ namespace Masareefy.Views
             sum.Controls.Add(sumTitle); sumTitle.Dock = DockStyle.Top;
             row.Controls.Add(sum, 0, 0);
 
-            // donut + legend
+            // توزيع المصاريف حسب التصنيف.
             var dCard = new RoundedPanel { Dock = DockStyle.Fill, Padding = new Padding(16), Margin = new Padding(8), MinimumSize = new Size(150, 300) };
             var slices = SampleData.Distribution();
             var donut = new DonutChart { Slices = slices, MinimumSize = new Size(100, 200) };
@@ -75,7 +76,7 @@ namespace Masareefy.Views
             dCard.Controls.Add(donut); donut.Dock = DockStyle.Fill;
             row.Controls.Add(dCard, 1, 0);
 
-            // bars
+            // المصاريف على مدار الشهور.
             var bCard = new RoundedPanel { Dock = DockStyle.Fill, Padding = new Padding(16), Margin = new Padding(8), MinimumSize = new Size(150, 300) };
             var bar = new BarChart { Labels = SampleData.Last6Labels, Values = SampleData.Last6Values, MinimumSize = new Size(340, 140) };
             var bTitle = Theme.Lbl("المصاريف الشهرية", 12, true, Theme.Ink, Align.Start); bTitle.Height = 34;
@@ -88,11 +89,13 @@ namespace Masareefy.Views
             UpdatePeriod();
         }
 
+        // بيحدث عنوان الفترة المختارة.
         private void UpdatePeriod()
         {
             _period.Text = "شهر " + _month.SelectedItem + " " + _year.SelectedItem;
         }
 
+        // بيجهز عنوان وقائمة اختيار جوه كارت الفلاتر.
         private static Panel Field(string label, ComboBox combo, int width)
         {
             var p = new Panel { Size = new Size(width + 16, 76), Margin = new Padding(4, 0, 4, 0), BackColor = Color.Transparent };
@@ -107,9 +110,10 @@ namespace Masareefy.Views
             return p;
         }
 
+        // بيبني صف في ملخص التقرير.
         private static Panel SummaryRow(string icon, string caption, string value)
         {
-            // Dock=Top: the row added LAST appears on top, so rows are added bottom-to-top by the caller
+            // Dock=Top بيخلي آخر صف مضاف يظهر فوق.
             var row = new Panel { Height = 72, BackColor = Color.Transparent };
             var ic = new IconBox { Icon = icon, IconColor = Theme.Primary, CircleFill = Theme.Soft, Width = 52 };
             var cap = Theme.Lbl(caption, 9.5f, false, Theme.Muted, Align.Start); cap.Height = 26;

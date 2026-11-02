@@ -6,11 +6,14 @@ using Masareefy.Helpers;
 
 namespace Masareefy.Views
 {
+    /// <summary>أصل مشترك للشاشات: خلفية خفيفة مرسومة مرة ومخزنة مؤقتًا.</summary>
     public class BaseView : UserControl
     {
         private const int TileSpacing = 170;
+        // صورة الخلفية الجاهزة عشان مانعيدش رسمها كل مرة.
         private Bitmap _backgroundCache;
 
+        // بنجهز اتجاه الشاشة والرسم المزدوج.
         public BaseView()
         {
             SetStyle(ControlStyles.SupportsTransparentBackColor | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
@@ -20,6 +23,7 @@ namespace Masareefy.Views
             RightToLeft = RightToLeft.Yes;
         }
 
+        // بنعيد تجهيز الخلفية لما مقاس الشاشة يتغير.
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
@@ -27,6 +31,7 @@ namespace Masareefy.Views
             Invalidate();
         }
 
+        // بنعرض الصورة المخزنة، ولو مش جاهزة بنرسمها.
         protected override void OnPaintBackground(PaintEventArgs e)
         {
             if (Width <= 0 || Height <= 0)
@@ -37,6 +42,7 @@ namespace Masareefy.Views
                 e.Graphics.DrawImageUnscaled(_backgroundCache, 0, 0);
         }
 
+        // بنحرر صورة الخلفية لما الشاشة تتقفل.
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -50,6 +56,7 @@ namespace Masareefy.Views
             base.Dispose(disposing);
         }
 
+        // بيرسم نقش الخلفية والعلامة المائية.
         private void RebuildBackground()
         {
             if (Width <= 0 || Height <= 0)
@@ -75,6 +82,7 @@ namespace Masareefy.Views
             }
         }
 
+        // بيرسم شكل صغير حسب النوع المختار.
         private static void DrawPatternIcon(Graphics graphics, int type, float centerX, float centerY, float angle, Color color)
         {
             var state = graphics.Save();
@@ -116,6 +124,7 @@ namespace Masareefy.Views
             graphics.Restore(state);
         }
 
+        // بيكتب اختصار الجنيه في مساحة محددة.
         private static void DrawCurrency(Graphics graphics, RectangleF bounds, Color color, float size)
         {
             using (var font = Theme.F(size, true))
@@ -124,6 +133,7 @@ namespace Masareefy.Views
                 graphics.DrawString("ج.م", font, brush, bounds, format);
         }
 
+        // بيرسم علامة المحفظة الخفيفة في الركن.
         private void DrawWatermark(Graphics graphics)
         {
             float x = Width - 282;
@@ -151,6 +161,7 @@ namespace Masareefy.Views
             }
         }
 
+        // بيرسم ورقة من شكل العلامة المائية.
         private static void DrawLeaf(Graphics graphics, float x, float y, Color line, Color fill, bool left)
         {
             using (var path = new GraphicsPath())

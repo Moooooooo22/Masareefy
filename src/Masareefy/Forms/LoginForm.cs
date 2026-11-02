@@ -6,12 +6,15 @@ using Masareefy.Helpers;
 
 namespace Masareefy.Forms
 {
+    /// <summary>شاشة الدخول ومنها بنوصل للتسجيل واستعادة كلمة المرور.</summary>
     public class LoginForm : Form
     {
+        // حقول الدخول ورسالة الخطأ.
         private readonly TextBox _userName = new TextBox();
         private readonly TextBox _password = new TextBox();
         private readonly Label _error = new Label();
 
+        // بنجهز شاشة الدخول وأزرار التنقل للشاشات التانية.
         public LoginForm()
         {
             Text = "Masareefy - تسجيل الدخول";
@@ -57,16 +60,27 @@ namespace Masareefy.Forms
             _error.Visible = false;
             Controls.Add(_error);
 
-            var login = new RoundedButton { Text = "تسجيل الدخول" };
+            var login = new RoundedButton
+            {
+                Text = "تسجيل الدخول",
+                Fill = Color.Transparent,
+                HoverFill = Color.Transparent,
+                TextColor = Theme.Primary,
+                Stroke = Color.Transparent
+            };
             login.SetBounds(60, 330, 360, 46);
             login.Click += (sender, args) => Login();
             Controls.Add(login);
 
-            var signUp = new RoundedButton { Text = "إنشاء حساب" };
+            var signUp = new RoundedButton
+            {
+                Text = "إنشاء حساب",
+                Fill = Color.Transparent,
+                HoverFill = Color.Transparent,
+                TextColor = Theme.Primary,
+                Stroke = Color.Transparent
+            };
             signUp.SetBounds(60, 390, 170, 42);
-            signUp.Fill = Theme.Soft;
-            signUp.HoverFill = Theme.Border;
-            signUp.TextColor = Theme.Primary;
             signUp.Click += (sender, args) =>
             {
                 using (var form = new SignUpForm())
@@ -74,11 +88,15 @@ namespace Masareefy.Forms
             };
             Controls.Add(signUp);
 
-            var forgotPassword = new RoundedButton { Text = "نسيت كلمة المرور؟" };
+            var forgotPassword = new RoundedButton
+            {
+                Text = "نسيت كلمة المرور؟",
+                Fill = Color.Transparent,
+                HoverFill = Color.Transparent,
+                TextColor = Theme.Primary,
+                Stroke = Color.Transparent
+            };
             forgotPassword.SetBounds(250, 390, 170, 42);
-            forgotPassword.Fill = Theme.Soft;
-            forgotPassword.HoverFill = Theme.Border;
-            forgotPassword.TextColor = Theme.Primary;
             forgotPassword.Click += (sender, args) =>
             {
                 using (var form = new ForgotPasswordForm())
@@ -88,6 +106,7 @@ namespace Masareefy.Forms
             AcceptButton = login;
         }
 
+        // بيتأكد من الحساب ويحفظ اسمه في الجلسة.
         private void Login()
         {
             var name = _userName.Text.Trim();

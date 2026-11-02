@@ -10,11 +10,13 @@ using Masareefy.Models;
 
 namespace Masareefy.Views
 {
-    /// <summary>Screen 4: categories table (name, color, budget, spent, % bar) with add / edit / delete.</summary>
+    /// <summary>صفحة التصنيفات: الاسم واللون والميزانية ونسبة الصرف.</summary>
     public class CategoriesView : BaseView
     {
+        // الجدول اللي بيعرض بيانات التصنيفات.
         private readonly DataGridView _grid = new DataGridView();
 
+        // بنجهز الجدول وزر الإضافة وأحداث الخلايا.
         public CategoriesView()
         {
             var add = new RoundedButton { Text = "إضافة تصنيف جديد", Size = new Size(210, 44), Location = new Point(0, 8) };
@@ -45,12 +47,14 @@ namespace Masareefy.Views
             LoadData();
         }
 
+        // بيضيف عمود بالعنوان والمساحة المناسبة.
         private void AddCol(string name, string header, float weight)
         {
             var c = new DataGridViewTextBoxColumn { Name = name, HeaderText = header, FillWeight = weight, SortMode = DataGridViewColumnSortMode.NotSortable };
             _grid.Columns.Add(c);
         }
 
+        // بيحمل التصنيفات الحالية في الجدول.
         private void LoadData()
         {
             _grid.Rows.Clear();
@@ -61,7 +65,12 @@ namespace Masareefy.Views
             }
         }
 
-        // ---------------------------------------------------------------- painting
+        public void RefreshData()
+        {
+            LoadData();
+        }
+
+        // بيرسم لون التصنيف وشريط نسبة الميزانية.
         private void Grid_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
             if (e.RowIndex < 0) return;
@@ -106,6 +115,7 @@ namespace Masareefy.Views
             }
         }
 
+        // بيعرف إذا الضغط كان على زر تعديل أو حذف.
         private string HitAction(DataGridViewCellMouseEventArgs e)
         {
             if (e.RowIndex < 0 || _grid.Columns[e.ColumnIndex].Name != "actions") return null;
@@ -113,6 +123,7 @@ namespace Masareefy.Views
             return ActionCell.HitTest(cell, new Point(cell.X + e.X, cell.Y + e.Y));
         }
 
+        // بينفذ الزر اللي اتضغط عليه في الصف.
         private void Grid_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             string action = HitAction(e);
@@ -122,7 +133,7 @@ namespace Masareefy.Views
             if (action == "edit") EditCategory(cat); else DeleteCategory(cat);
         }
 
-        // ---------------------------------------------------------------- actions
+        // بيضيف تصنيف جديد للبيانات التجريبية.
         private void AddCategory()
         {
             using (var dlg = new CategoryDialog())
@@ -135,6 +146,7 @@ namespace Masareefy.Views
             }
         }
 
+        // بيعدل التصنيف وبيحدّث اسمه في المصاريف المرتبطة.
         private void EditCategory(Category c)
         {
             using (var dlg = new CategoryDialog(c))
@@ -143,15 +155,16 @@ namespace Masareefy.Views
                 var r = dlg.Result;
                 string oldName = c.Name;
                 c.Name = r.Name; c.MonthlyBudget = r.MonthlyBudget; c.ColorValue = r.ColorValue;
-                // keep the expenses linked to the renamed category
+                // بنخلي المصاريف تفضل مرتبطة بالتصنيف بعد تغيير اسمه.
                 foreach (var x in SampleData.Expenses.Where(x => x.CategoryName == oldName)) x.CategoryName = c.Name;
                 LoadData();
             }
         }
 
+        // بيمنع حذف تصنيف مستخدم، وبعدها يطلب تأكيد الحذف.
         private void DeleteCategory(Category c)
         {
-            // business rule: a category that has expenses can not be deleted
+            // ماينفعش نحذف تصنيف لسه مربوط بمصاريف.
             if (SampleData.Expenses.Any(x => x.CategoryName == c.Name))
             {
                 MessageBox.Show("مينفعش تحذف تصنيف عليه مصاريف.", "Masareefy", MessageBoxButtons.OK, MessageBoxIcon.Warning,

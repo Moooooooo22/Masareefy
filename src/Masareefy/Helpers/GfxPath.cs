@@ -4,9 +4,10 @@ using System.Drawing.Drawing2D;
 
 namespace Masareefy.Helpers
 {
-    /// <summary>Makes rounded-rectangle paths (used by cards and buttons).</summary>
+    /// <summary>بيجهز مسار مستطيل بحواف دائرية للرسم.</summary>
     public static class GfxPath
     {
+        // بيرجع مسار مستطيل عادي أو مدور حسب قيمة radius.
         public static GraphicsPath Round(Rectangle r, int radius)
         {
             var p = new GraphicsPath();

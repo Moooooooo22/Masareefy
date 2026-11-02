@@ -8,12 +8,13 @@ using Masareefy.Models;
 
 namespace Masareefy.Views
 {
-    /// <summary>Screen 2: the home page (four summary cards and four charts).</summary>
+    /// <summary>الهوم: ملخص سريع وأربع رسوم على بيانات الديمو.</summary>
     public class DashboardView : BaseView
     {
+        // بنجهز العنوان وكروت الملخص والرسوم.
         public DashboardView()
         {
-            // ----- header: title on the left, bell + user on the right -----
+            // عنوان الصفحة واسم المستخدم والجرس.
             var right = new Panel { Width = 270, BackColor = Color.Transparent, RightToLeft = RightToLeft.Yes };
             var bell = new BellButton { Count = 3, Location = new Point(0, 4) };
             var chip = new RoundedPanel { Radius = 24, Location = new Point(66, 8), Size = new Size(204, 48) };
@@ -24,7 +25,7 @@ namespace Masareefy.Views
             right.Controls.Add(bell); right.Controls.Add(chip);
             var header = Theme.Header("الصفحة الرئيسية", right);
 
-            // ----- 4 summary cards -----
+            // كروت الملخص الأربعة.
             var stats = new Panel { Height = 312, Padding = new Padding(12, 0, 12, 0), BackColor = Color.Transparent, AutoScroll = true };
             var row = FixedGrid(2, 2, 536, 156);
 
@@ -58,7 +59,7 @@ namespace Masareefy.Views
                 row.Location = new Point(stats.Padding.Left + Math.Max(0, (availableWidth - row.Width) / 2), stats.Padding.Top);
             };
 
-            // ----- charts in a scrollable 2x2 grid -----
+            // الرسوم في شبكة بتتمرير لو الشاشة ضيقة.
             var charts = new Panel { Padding = new Padding(12, 4, 12, 16), BackColor = Color.Transparent, AutoScroll = true };
             var crow = FixedGrid(2, 2, 536, 340);
 
@@ -74,9 +75,9 @@ namespace Masareefy.Views
             var legend = new LegendList { Width = 160, Padding = new Padding(0, 8, 0, 0) };
             legend.SetItems(slices);
             var donutTitle = Theme.Lbl("توزيع المصاريف حسب التصنيف", 12, true, Theme.Ink, Align.Start).H(36);
-            donutCard.Controls.Add(donutTitle); donutTitle.Dock = DockStyle.Top;     // Top first (full width)
-            donutCard.Controls.Add(legend); legend.Dock = DockStyle.Right;           // then Right
-            donutCard.Controls.Add(donut); donut.Dock = DockStyle.Fill;              // Fill last
+            donutCard.Controls.Add(donutTitle); donutTitle.Dock = DockStyle.Top;
+            donutCard.Controls.Add(legend); legend.Dock = DockStyle.Right;
+            donutCard.Controls.Add(donut); donut.Dock = DockStyle.Fill;
             crow.Controls.Add(donutCard, 1, 0);
 
             var categoryLabels = SampleData.Categories.Select(category => category.Name).ToArray();
@@ -121,7 +122,7 @@ namespace Masareefy.Views
             Theme.DockStack(this, charts, header, stats);
         }
 
-        // ---------- small helpers ----------
+        // بيجهز شبكة بمقاسات ثابتة للكروت.
         private static TableLayoutPanel FixedGrid(int columns, int rows, int columnWidth, int rowHeight)
         {
             var t = new TableLayoutPanel
@@ -141,12 +142,13 @@ namespace Masareefy.Views
             return t;
         }
 
+        // بيجهز أيقونة جوه دايرة لون.
         private static IconBox Icon(string icon, Color color, Color circle)
         {
             return new IconBox { Icon = icon, IconColor = color, CircleFill = circle };
         }
 
-        /// <summary>A white card: icon on the right, text lines (top to bottom) next to it.</summary>
+        /// <summary>بيبني كارت فيه أيقونة وسطور نص.</summary>
         private static RoundedPanel Card(Control iconControl, params Label[] lines)
         {
             var card = new RoundedPanel { Size = new Size(520, 140), Padding = new Padding(16), Margin = new Padding(8), Anchor = AnchorStyles.None };
@@ -164,7 +166,7 @@ namespace Masareefy.Views
 
     internal static class LabelExt
     {
-        /// <summary>Sets the height and returns the label (so we can write it in one line).</summary>
+        /// <summary>بيحدد ارتفاع النص ويرجع الـLabel عشان يتضاف بسهولة.</summary>
         public static Label H(this Label l, int height) { l.Height = height; return l; }
     }
 }

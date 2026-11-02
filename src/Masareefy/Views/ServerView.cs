@@ -7,12 +7,10 @@ using Masareefy.Helpers;
 
 namespace Masareefy.Views
 {
-    /// <summary>
-    /// Screen 6: server control. For now it is only a design (fake data + a timer for the uptime).
-    /// LATER (networking step) the Start/Stop button will start a real TCP server.
-    /// </summary>
+    /// <summary>شاشة شكلية للسيرفر؛ الزر والعداد مش بيشغلوا اتصال حقيقي.</summary>
     public class ServerView : BaseView
     {
+        // بيانات حالة السيرفر والعداد والجدول.
         private readonly Timer _timer = new Timer();
         private readonly Label _status, _statusValue, _uptimeValue;
         private readonly RoundedButton _toggle;
@@ -21,9 +19,10 @@ namespace Masareefy.Views
         private bool _running = true;
         private TimeSpan _uptime = new TimeSpan(2, 15, 30);
 
+        // بنجهز بطاقات الحالة وجدول الأجهزة والعداد التجريبي.
         public ServerView()
         {
-            // ----- header: title on the left, status + stop button on the right -----
+            // العنوان وحالة السيرفر وزر التشغيل.
             var right = new Panel { Width = 430, BackColor = Color.Transparent, RightToLeft = RightToLeft.No };
             _toggle = new RoundedButton { Text = "إيقاف السيرفر", Size = new Size(176, 44), Location = new Point(238, 8), Fill = Theme.Danger, HoverFill = Color.FromArgb(190, 50, 50) };
             _toggle.Click += (s, e) => Toggle();
@@ -33,7 +32,7 @@ namespace Masareefy.Views
             right.Controls.Add(_toggle); right.Controls.Add(_status); right.Controls.Add(_dot);
             var header = Theme.Header("إدارة السيرفر", right);
 
-            // ----- 3 cards (left to right: uptime, devices, server status) -----
+            // بطاقات مدة التشغيل والأجهزة وحالة السيرفر.
             var cards = new Panel { Height = 198, Padding = new Padding(20, 0, 20, 0), BackColor = Color.Transparent };
             var row = new TableLayoutPanel { ColumnCount = 3, RowCount = 1, BackColor = Color.Transparent };
             for (int i = 0; i < 3; i++) row.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33f));
@@ -59,7 +58,7 @@ namespace Masareefy.Views
                 LtrLabel("5050", 9).Tall(20)), 2, 0);
             cards.Controls.Add(row); row.Dock = DockStyle.Fill;
 
-            // ----- connected devices table -----
+            // جدول أجهزة تجريبية متصلة.
             var body = new Panel { Padding = new Padding(28, 4, 28, 24), BackColor = Color.Transparent };
             body.AutoScroll = true;
             var card = new RoundedPanel { Padding = new Padding(16) };
@@ -85,16 +84,19 @@ namespace Masareefy.Views
             _timer.Start();
         }
 
+        // بيعرض الوقت بصيغة ساعات:دقايق:ثواني.
         private static string Format(TimeSpan t)
         {
             return ((int)t.TotalHours).ToString("00") + ":" + t.Minutes.ToString("00") + ":" + t.Seconds.ToString("00");
         }
 
+        // بيضيف عمود لجدول الأجهزة.
         private void AddCol(string name, string header, float weight)
         {
             _grid.Columns.Add(new DataGridViewTextBoxColumn { Name = name, HeaderText = header, FillWeight = weight, SortMode = DataGridViewColumnSortMode.NotSortable });
         }
 
+        // بيرسم حالة الاتصال كنص ونقطة لون.
         private void Grid_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
             if (e.RowIndex < 0) return;
@@ -121,7 +123,7 @@ namespace Masareefy.Views
             e.Handled = true;
         }
 
-        /// <summary>Fake start/stop (just changes the look). The real server comes in the networking step.</summary>
+        /// <summary>بيغير شكل الحالة والعداد بس؛ مفيش سيرفر حقيقي لسه.</summary>
         private void Toggle()
         {
             _running = !_running;
@@ -138,6 +140,7 @@ namespace Masareefy.Views
             _grid.Invalidate();
         }
 
+        // بيبني كارت فيه أيقونة ومجموعة نصوص.
         private static RoundedPanel Card(string icon, Color color, params Label[] lines)
         {
             var card = new RoundedPanel { Dock = DockStyle.Fill, Padding = new Padding(16), Margin = new Padding(8) };
@@ -153,6 +156,7 @@ namespace Masareefy.Views
             return card;
         }
 
+        // بيجهز Label لنص إنجليزي أو أرقام من الشمال لليمين.
         private static Label LtrLabel(string text, float size, bool bold = false)
         {
             var label = Theme.Lbl(text, size, bold, Theme.Ink, Align.End);
@@ -164,6 +168,7 @@ namespace Masareefy.Views
 
     internal static class LabelTall
     {
+        // بيحدد ارتفاع السطر ويرجع الـLabel.
         public static Label Tall(this Label l, int height) { l.Height = height; return l; }
     }
 }

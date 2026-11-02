@@ -3,12 +3,10 @@ using System.Drawing.Drawing2D;
 
 namespace Masareefy.Helpers
 {
-    /// <summary>
-    /// Draws the small icons with GDI+ (no image files needed).
-    /// Every icon is drawn inside a 22 x 22 box.
-    /// </summary>
+    /// <summary>بيرسم الأيقونات بخطوط GDI+ جوه مساحة 22×22.</summary>
     public static class IconPainter
     {
+        // المفتاح بيحدد شكل الأيقونة ومكان الرسم.
         public static void Draw(Graphics g, string key, Rectangle r, Color c)
         {
             g.SmoothingMode = SmoothingMode.AntiAlias;

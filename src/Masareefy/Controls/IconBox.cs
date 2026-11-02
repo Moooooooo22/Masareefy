@@ -6,13 +6,14 @@ using Masareefy.Helpers;
 
 namespace Masareefy.Controls
 {
-    /// <summary>Shows one of our GDI+ icons, optionally inside a soft circle.</summary>
+    /// <summary>بيحط أيقونة جوه كنترول وممكن يضيف وراها دايرة.</summary>
     public class IconBox : Control
     {
         public string Icon { get; set; }
         public Color IconColor { get; set; } = Theme.Primary;
         public Color CircleFill { get; set; } = Color.Transparent;
 
+        // بنجهز الكنترول للرسم الشفاف.
         public IconBox()
         {
             SetStyle(ControlStyles.SupportsTransparentBackColor | ControlStyles.UserPaint |
@@ -20,6 +21,7 @@ namespace Masareefy.Controls
             BackColor = Color.Transparent;
         }
 
+        // بنظبط حجم الأيقونة على مقاس الكنترول.
         protected override void OnPaint(PaintEventArgs e)
         {
             var g = e.Graphics;

@@ -8,9 +8,10 @@ using Masareefy.Models;
 
 namespace Masareefy.Forms
 {
-    /// <summary>Small window to add or edit a category (name, color, monthly budget).</summary>
+    /// <summary>نافذة إضافة أو تعديل تصنيف وميزانيته ولونه.</summary>
     public class CategoryDialog : Form
     {
+        // التصنيف اللي هيرجع للصفحة بعد الحفظ.
         public Category Result { get; private set; }
 
         private readonly Category _editing;
@@ -19,6 +20,7 @@ namespace Masareefy.Forms
         private Panel _colorPreview;
         private Color _color = Theme.Success;
 
+        // لو وصلنا تصنيف بنملاه عشان يتعدل، غير كده بنجهز إضافة جديدة.
         public CategoryDialog(Category existing = null)
         {
             _editing = existing;
@@ -41,6 +43,7 @@ namespace Masareefy.Forms
             var l3 = Theme.Lbl("اللون", 10, true, Theme.Ink, Align.Start); l3.Location = new Point(24, 166); l3.Size = new Size(392, 24);
             _colorPreview = new Panel { Location = new Point(372, 194), Size = new Size(44, 34), BackColor = _color, BorderStyle = BorderStyle.FixedSingle };
             var pick = new RoundedButton { Text = "اختيار لون", Location = new Point(24, 192), Size = new Size(160, 38), Fill = Color.White, HoverFill = Theme.Bg, TextColor = Theme.Ink, Stroke = Theme.Border };
+            // اختيار لون جديد للتصنيف.
             pick.Click += (s, e) =>
             {
                 using (var cd = new ColorDialog { Color = _color, FullOpen = true })
@@ -64,6 +67,7 @@ namespace Masareefy.Forms
             }
         }
 
+        // بيتحقق من الاسم والميزانية وبعدها يرجع التصنيف.
         private void Save()
         {
             _err.Clear();

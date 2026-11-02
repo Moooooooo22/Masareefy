@@ -6,13 +6,15 @@ using Masareefy.Helpers;
 
 namespace Masareefy.Controls
 {
-    /// <summary>The notification bell with a red number badge.</summary>
+    /// <summary>جرس إشعارات بيعرض رقم فوق الأيقونة.</summary>
     public class BellButton : Control
     {
+        // عدد الإشعارات اللي ظاهر في العلامة.
         public int Count { get; set; } = 0;
 
         public BellButton()
         {
+            // بنجهز شكل الجرس وحجمه.
             SetStyle(ControlStyles.SupportsTransparentBackColor | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint |
                      ControlStyles.OptimizedDoubleBuffer, true);
             BackColor = Color.Transparent;
@@ -22,6 +24,7 @@ namespace Masareefy.Controls
 
         protected override void OnPaint(PaintEventArgs e)
         {
+            // بيرسم الجرس ورقم الإشعارات لو موجود.
             var g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
             var body = new Rectangle(2, 6, 44, 44);

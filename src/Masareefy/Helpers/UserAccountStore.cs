@@ -5,13 +5,17 @@ using Microsoft.Data.Sqlite;
 
 namespace Masareefy.Helpers
 {
+    /// <summary>بيحفظ الحسابات محليًا ويتحقق من كلمات المرور وأكواد الاستعادة.</summary>
     public static class UserAccountStore
     {
+        // إعدادات هاش كلمة المرور وكود الاستعادة.
         private const int HashIterations = 600000;
         private const int SaltSize = 16;
         private const int HashSize = 32;
+        // مسار قاعدة الحسابات جوه بيانات المستخدم.
         private static readonly string DatabasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Masareefy", "users.db");
 
+        // بيتأكد من البيانات، ويضيف الحساب ويرجع كود الاستعادة.
         public static bool Register(string userName, string password, out string recoveryCode, out string error)
         {
             recoveryCode = null;
@@ -57,6 +61,7 @@ namespace Masareefy.Helpers
             }
         }
 
+        // بيقارن كلمة المرور بالهاش المخزن للحساب.
         public static bool VerifyCredentials(string userName, string password)
         {
             if (string.IsNullOrWhiteSpace(userName) || password == null)
@@ -78,6 +83,7 @@ namespace Masareefy.Helpers
             }
         }
 
+        // بيتأكد من كود الاستعادة وبيحفظ هاش كلمة المرور الجديدة.
         public static bool ResetPassword(string userName, string recoveryCode, string newPassword, out string error)
         {
             error = null;
@@ -121,6 +127,7 @@ namespace Masareefy.Helpers
             }
         }
 
+        // بيفتح قاعدة البيانات وبيجهز جدول المستخدمين لو مش موجود.
         private static SqliteConnection OpenConnection()
         {
             Directory.CreateDirectory(Path.GetDirectoryName(DatabasePath));
@@ -134,11 +141,13 @@ namespace Masareefy.Helpers
             return connection;
         }
 
+        // بيطلع هاش مملح لكلمة المرور أو كود الاستعادة.
         private static byte[] Hash(string value, byte[] salt)
         {
             return Rfc2898DeriveBytes.Pbkdf2(value, salt, HashIterations, HashAlgorithmName.SHA256, HashSize);
         }
 
+        // بيشيل المسافات والشرطات من كود الاستعادة قبل المقارنة.
         private static string NormalizeRecoveryCode(string code)
         {
             return (code ?? string.Empty).Replace("-", string.Empty).Replace(" ", string.Empty).Trim().ToUpperInvariant();

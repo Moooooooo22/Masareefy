@@ -8,9 +8,10 @@ using Masareefy.Models;
 
 namespace Masareefy.Forms
 {
-    /// <summary>Small window to add a new expense or edit an existing one.</summary>
+    /// <summary>نافذة إضافة أو تعديل مصروف.</summary>
     public class ExpenseDialog : Form
     {
+        // المصروف اللي هيرجع للصفحة بعد الحفظ.
         public Expense Result { get; private set; }
 
         private readonly Expense _editing;
@@ -19,6 +20,7 @@ namespace Masareefy.Forms
         private ComboBox _cmbCategory;
         private DateTimePicker _dtp;
 
+        // بنجهز الحقول ونملاها لو بنعدل مصروف موجود.
         public ExpenseDialog(Expense existing = null)
         {
             _editing = existing;
@@ -67,6 +69,7 @@ namespace Masareefy.Forms
             else _cmbCategory.SelectedIndex = 0;
         }
 
+        // بيضيف عنوان وحقل وبيزود مكان الحقل اللي بعده.
         private void AddField(string label, Control input, ref int y, int height)
         {
             var l = Theme.Lbl(label, 10, true, Theme.Ink, Align.Start);
@@ -79,6 +82,7 @@ namespace Masareefy.Forms
             y += 26 + height + 22;
         }
 
+        // بيتحقق من المبلغ والوصف والتصنيف قبل الحفظ.
         private void Save()
         {
             _err.Clear();

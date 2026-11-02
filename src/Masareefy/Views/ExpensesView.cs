@@ -11,7 +11,7 @@ using Masareefy.Models;
 
 namespace Masareefy.Views
 {
-    /// <summary>Screen 3: expenses table with search, filters, paging, add / edit / delete.</summary>
+    /// <summary>صفحة المصاريف: بحث وفلاتر وجدول وإضافة وتعديل وحذف.</summary>
     public class ExpensesView : BaseView
     {
         private const int PageSize = 5;
@@ -27,21 +27,22 @@ namespace Masareefy.Views
         private int _page = 1;
         private bool _loading;
 
+        // بنجهز الفلاتر والجدول وأزرار التنقل بين الصفحات.
         public ExpensesView()
         {
-            // ----- header -----
+            // العنوان وزر إضافة مصروف.
             var add = new RoundedButton { Text = "إضافة مصروف جديد", Size = new Size(210, 44), Location = new Point(0, 8) };
             add.Click += (s, e) => AddExpense();
             var addWrap = new Panel { Width = 210, BackColor = Color.Transparent };
             addWrap.Controls.Add(add);
             var header = Theme.Header("المصاريف", addWrap);
 
-            // ----- card with filters, table, footer -----
+            // الكارت اللي شايل الفلاتر والجدول والملخص.
             var body = new Panel { Padding = new Padding(28, 4, 28, 24), BackColor = Color.Transparent };
             var card = new RoundedPanel { Padding = new Padding(16) };
             body.Controls.Add(card); card.Dock = DockStyle.Fill;
 
-            // filters (visual order left to right: from, to, category, search)
+            // فلاتر التاريخ والتصنيف والبحث.
             var filters = new Panel { Height = 62, BackColor = Color.Transparent };
             var flow = new FlowLayoutPanel { FlowDirection = FlowDirection.RightToLeft, WrapContents = false, BackColor = Color.Transparent };
             _search.PlaceholderText = "بحث في الوصف...";
@@ -66,7 +67,7 @@ namespace Masareefy.Views
             flow.Controls.Add(lblTo); flow.Controls.Add(_to);
             filters.Controls.Add(flow); flow.Dock = DockStyle.Fill;
 
-            // footer: pager (left), summary (middle), export button (right)
+            // أسفل الجدول: صفحات وملخص وزر التصدير.
             var footer = new Panel { Height = 58, BackColor = Color.Transparent, Padding = new Padding(0, 10, 0, 0) };
             var export = new RoundedButton { Text = "تصدير إلى CSV", Width = 180 };
             export.Click += (s, e) => MessageBox.Show("تصدير CSV (في الخلفية) هيتعمل في خطوة الـ Threading.", "Masareefy",
@@ -92,11 +93,11 @@ namespace Masareefy.Views
             LoadData();
         }
 
-        // ---------------------------------------------------------------- grid
+        // بيجهز أعمدة الجدول وأحداث الرسم والضغط.
         private void BuildGrid()
         {
             Theme.StyleGrid(_grid);
-            // columns in the same order as the design (left to right)
+            // ترتيب الأعمدة الظاهر للمستخدم.
             AddCol("actions", "إجراءات", 14);
             AddCol("amount", "المبلغ (EGP)", 14);
             AddCol("category", "التصنيف", 20);
@@ -109,12 +110,14 @@ namespace Masareefy.Views
             _grid.CellMouseLeave += (s, e) => _grid.Cursor = Cursors.Default;
         }
 
+        // بيضيف عمود للجدول.
         private void AddCol(string name, string header, float weight)
         {
             var c = new DataGridViewTextBoxColumn { Name = name, HeaderText = header, FillWeight = weight, SortMode = DataGridViewColumnSortMode.NotSortable };
             _grid.Columns.Add(c);
         }
 
+        // بيرسم خلية التصنيف ونقطة لونه.
         private void Grid_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
             if (e.RowIndex < 0) return;
@@ -141,6 +144,7 @@ namespace Masareefy.Views
             }
         }
 
+        // بيعرف الضغط كان على زر التعديل ولا الحذف.
         private string HitAction(DataGridViewCellMouseEventArgs e)
         {
             if (e.RowIndex < 0 || _grid.Columns[e.ColumnIndex].Name != "actions") return null;
@@ -148,11 +152,13 @@ namespace Masareefy.Views
             return ActionCell.HitTest(cell, new Point(cell.X + e.X, cell.Y + e.Y));
         }
 
+        // بيغير شكل المؤشر لما يقف فوق زر إجراء.
         private void Grid_CellMouseMove(object sender, DataGridViewCellMouseEventArgs e)
         {
             _grid.Cursor = HitAction(e) != null ? Cursors.Hand : Cursors.Default;
         }
 
+        // بينفذ التعديل أو الحذف للصف المختار.
         private void Grid_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             string action = HitAction(e);
@@ -162,7 +168,7 @@ namespace Masareefy.Views
             if (action == "edit") EditExpense(expense); else DeleteExpense(expense);
         }
 
-        // ---------------------------------------------------------------- data
+        // بيفلتر المصاريف ويعرض الصفحة الحالية.
         private void LoadData()
         {
             if (_loading) return;
@@ -192,6 +198,13 @@ namespace Masareefy.Views
             _loading = false;
         }
 
+        public void RefreshData()
+        {
+            _page = 1;
+            LoadData();
+        }
+
+        // بيبني أزرار الصفحات حسب عدد النتائج.
         private void BuildPager(int pages)
         {
             _pager.Controls.Clear();
@@ -205,6 +218,7 @@ namespace Masareefy.Views
             _pager.Controls.Add(PageButton("›", x, _page < pages, () => { _page++; LoadData(); }));
         }
 
+        // بيجهز زر صفحة ويربطه بالحركة المطلوبة.
         private RoundedButton PageButton(string text, int x, bool enabled, Action click, bool active = false)
         {
             var b = new RoundedButton
@@ -220,7 +234,7 @@ namespace Masareefy.Views
             return b;
         }
 
-        // ---------------------------------------------------------------- actions
+        // بيفتح نافذة الإضافة ويضيف المصروف للبيانات التجريبية.
         private void AddExpense()
         {
             using (var dlg = new ExpenseDialog())
@@ -234,6 +248,7 @@ namespace Masareefy.Views
             }
         }
 
+        // بيعدل بيانات المصروف الموجود.
         private void EditExpense(Expense x)
         {
             using (var dlg = new ExpenseDialog(x))
@@ -246,6 +261,7 @@ namespace Masareefy.Views
             }
         }
 
+        // بيطلب تأكيد قبل حذف المصروف.
         private void DeleteExpense(Expense x)
         {
             var answer = MessageBox.Show("متأكد إنك عايز تحذف المصروف ده؟\n" + x.Description, "حذف مصروف",

@@ -7,7 +7,7 @@ using Masareefy.Helpers;
 
 namespace Masareefy.Controls
 {
-    /// <summary>Bar chart drawn by hand with GDI+ (grid lines, light tracks, green bars).</summary>
+    /// <summary>بيرسم أعمدة من القيم والعناوين باستخدام GDI+.</summary>
     public class BarChart : Control
     {
         public string[] Labels { get; set; } = new string[0];
@@ -29,7 +29,7 @@ namespace Masareefy.Controls
             g.SmoothingMode = SmoothingMode.AntiAlias;
             if (Values == null || Values.Length == 0) return;
 
-            int left = 56, right = 8, top = 10, bottom = 50; // Increased bottom margin for labels
+            int left = 56, right = 8, top = 10, bottom = 50; // مساحة المحاور والعناوين حوالين الرسم.
             var plot = new Rectangle(left, top, Width - left - right, Height - top - bottom);
             if (plot.Width < 40 || plot.Height < 40) return;
 

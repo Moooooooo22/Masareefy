@@ -5,11 +5,10 @@ using Masareefy.Models;
 
 namespace Masareefy.Helpers
 {
-    /// <summary>
-    /// Fake data so the screens look real. LATER we replace this with the database.
-    /// </summary>
+    /// <summary>بيانات ديمو للواجهات، والتعديلات عليها مش بتتحفظ.</summary>
     public static class SampleData
     {
+        // تصنيفات ومصاريف للتجربة بس.
         public static readonly List<Category> Categories = new List<Category>
         {
             new Category { Id = 1, Name = "الطعام",     ColorValue = Theme.Success, MonthlyBudget = 1000, Spent = 850 },
@@ -38,6 +37,7 @@ namespace Masareefy.Helpers
             E(14, 2026,9,30,  "تاكسي",              "المواصلات", 120),
         };
 
+        // العدادات اللي بتدي رقم جديد وقت الإضافة.
         public static int NextExpenseId = 15;
         public static int NextCategoryId = 7;
 
@@ -47,10 +47,11 @@ namespace Masareefy.Helpers
             "يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"
         };
 
-        // last 6 months (left to right, oldest first) - like the design
+        // قيم الرسم الشهري، من الأقدم للأحدث.
         public static readonly string[] Last6Labels = { "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر" };
         public static readonly double[] Last6Values = { 1500, 1300, 2600, 2400, 2500, 3100 };
 
+        // بيرجع شرائح توزيع المصاريف حسب التصنيف.
         public static List<ChartSlice> Distribution()
         {
             return new List<ChartSlice>
@@ -64,6 +65,7 @@ namespace Masareefy.Helpers
             };
         }
 
+        // بيرجع لون التصنيف، أو الرمادي لو مش موجود.
         public static Color ColorOf(string categoryName)
         {
             foreach (var c in Categories)
@@ -71,6 +73,7 @@ namespace Masareefy.Helpers
             return Theme.Gray;
         }
 
+        // بيختصر إنشاء مصروف تجريبي.
         static Expense E(int id, int y, int m, int d, string desc, string cat, decimal amount)
         {
             return new Expense { Id = id, Date = new DateTime(y, m, d), Description = desc, CategoryName = cat, Amount = amount, Notes = "" };

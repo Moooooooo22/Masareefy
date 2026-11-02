@@ -36,12 +36,18 @@ namespace Masareefy.Controls
         {
             var g = pevent.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
-            using (var path = GfxPath.Round(new Rectangle(0, 0, Width - 1, Height - 1), Radius))
-            using (var b = new SolidBrush(_hover ? HoverFill : Fill))
+            var fill = _hover ? HoverFill : Fill;
+            if (fill.A > 0 || Stroke.A > 0)
             {
-                g.FillPath(b, path);
-                if (Stroke.A > 0)
+                using (var path = GfxPath.Round(new Rectangle(0, 0, Width - 1, Height - 1), Radius))
+                {
+                    if (fill.A > 0)
+                        using (var b = new SolidBrush(fill)) g.FillPath(b, path);
+                    if (Stroke.A > 0)
+                    {
                     using (var p = new Pen(Stroke)) g.DrawPath(p, path);
+                    }
+                }
             }
             // Fix text rendering: remove EndEllipsis and add WordBreak for proper display
             TextRenderer.DrawText(g, Text, Font, ClientRectangle, TextColor,

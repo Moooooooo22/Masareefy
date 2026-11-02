@@ -6,14 +6,17 @@ using Masareefy.Helpers;
 
 namespace Masareefy.Forms
 {
+    /// <summary>شاشة تغيير كلمة المرور باستخدام كود الاستعادة.</summary>
     public class ForgotPasswordForm : Form
     {
+        // بيانات الحساب والكود وكلمة المرور الجديدة.
         private readonly TextBox _userName = new TextBox();
         private readonly TextBox _recoveryCode = new TextBox();
         private readonly TextBox _newPassword = new TextBox();
         private readonly TextBox _confirmPassword = new TextBox();
         private readonly Label _error = new Label();
 
+        // بنجهز حقول الاستعادة والتأكيد.
         public ForgotPasswordForm()
         {
             Text = "استعادة كلمة المرور";
@@ -48,6 +51,7 @@ namespace Masareefy.Forms
             AcceptButton = reset;
         }
 
+        // بيضيف حقل، ومعاه زر عين لو الحقل كلمة مرور.
         private void AddField(string labelText, TextBox input, int top, bool password)
         {
             var label = Theme.Lbl(labelText, 10, true);
@@ -66,6 +70,7 @@ namespace Masareefy.Forms
             }
         }
 
+        // بيتأكد من تطابق التأكيد وبعدين يطلب تغيير كلمة المرور.
         private void ResetPassword()
         {
             if (_newPassword.Text != _confirmPassword.Text)
@@ -93,6 +98,7 @@ namespace Masareefy.Forms
             }
         }
 
+        // بيعرض رسالة الخطأ تحت الحقول.
         private void ShowError(string message)
         {
             _error.Text = message;

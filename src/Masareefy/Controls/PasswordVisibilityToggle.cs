@@ -4,10 +4,13 @@ using Masareefy.Helpers;
 
 namespace Masareefy.Controls
 {
+    /// <summary>زر العين اللي بيظهر أو يخفي كلمة المرور.</summary>
     public class PasswordVisibilityToggle : Button
     {
+        // مربع النص اللي الزر بيتحكم فيه.
         private readonly TextBox _passwordBox;
 
+        // بنربط العين بمربع كلمة المرور.
         public PasswordVisibilityToggle(TextBox passwordBox)
         {
             _passwordBox = passwordBox ?? throw new ArgumentNullException(nameof(passwordBox));
@@ -26,6 +29,7 @@ namespace Masareefy.Controls
             TabStop = true;
         }
 
+        // بنبدل الإخفاء والظهور ونرجع المؤشر مكانه.
         protected override void OnClick(EventArgs e)
         {
             int selectionStart = _passwordBox.SelectionStart;

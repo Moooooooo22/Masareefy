@@ -6,13 +6,16 @@ using Masareefy.Helpers;
 
 namespace Masareefy.Forms
 {
+    /// <summary>شاشة إنشاء حساب جديد وإظهار كود الاستعادة.</summary>
     public class SignUpForm : Form
     {
+        // بيانات الحساب ورسالة التحقق.
         private readonly TextBox _userName = new TextBox();
         private readonly TextBox _password = new TextBox();
         private readonly TextBox _confirmPassword = new TextBox();
         private readonly Label _error = new Label();
 
+        // بنجهز الحقول وأزرار إظهار كلمة المرور.
         public SignUpForm()
         {
             Text = "إنشاء حساب جديد";
@@ -46,6 +49,7 @@ namespace Masareefy.Forms
             AcceptButton = create;
         }
 
+        // بيضيف Label وحقل، ومعاه زر عين لو الحقل كلمة مرور.
         private void AddField(string labelText, TextBox input, int top, bool password)
         {
             var label = Theme.Lbl(labelText, 10, true);
@@ -64,6 +68,7 @@ namespace Masareefy.Forms
             }
         }
 
+        // بيتأكد من المدخلات وبعدها يسجل الحساب.
         private void CreateAccount()
         {
             if (_password.Text != _confirmPassword.Text)
@@ -92,6 +97,7 @@ namespace Masareefy.Forms
             }
         }
 
+        // بيعرض كود الاستعادة مرة واحدة بعد نجاح التسجيل.
         private void ShowRecoveryCode(string code)
         {
             using (var dialog = new Form())
@@ -139,6 +145,7 @@ namespace Masareefy.Forms
             }
         }
 
+        // بيعرض سبب رفض التسجيل للمستخدم.
         private void ShowError(string message)
         {
             _error.Text = message;

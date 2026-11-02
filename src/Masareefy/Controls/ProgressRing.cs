@@ -6,11 +6,12 @@ using Masareefy.Helpers;
 
 namespace Masareefy.Controls
 {
-    /// <summary>Circle progress (used for the budget status).</summary>
+    /// <summary>حلقة بتوضح نسبة استخدام الميزانية.</summary>
     public class ProgressRing : Control
     {
         public int Percent { get; set; } = 0;
 
+        // بنجهز الكنترول عشان يرسم النسبة بنفسه.
         public ProgressRing()
         {
             SetStyle(ControlStyles.SupportsTransparentBackColor | ControlStyles.UserPaint |
@@ -19,6 +20,7 @@ namespace Masareefy.Controls
             BackColor = Color.Transparent;
         }
 
+        // بنرسم الحلقة ونكتب النسبة في النص.
         protected override void OnPaint(PaintEventArgs e)
         {
             var g = e.Graphics;

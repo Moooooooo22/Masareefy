@@ -5,13 +5,13 @@ using System.Windows.Forms;
 
 namespace Masareefy.Helpers
 {
-    /// <summary>Where the text sits. Start = right side (Arabic), End = left side.</summary>
+    /// <summary>محاذاة النص: Start يمين وEnd شمال في الواجهة العربية.</summary>
     public enum Align { Start, Center, End }
 
-    /// <summary>All colors, fonts and small helpers so every screen looks the same.</summary>
+    /// <summary>الألوان والخطوط ومساعدات شكل الواجهة.</summary>
     public static class Theme
     {
-        // ---- Colors (from the design) ----
+        // ألوان مشتركة بين كل الشاشات.
         public static readonly Color Sidebar = ColorTranslator.FromHtml("#0B4F2F");
         public static readonly Color SidebarActive = ColorTranslator.FromHtml("#1C7A49");
         public static readonly Color SidebarHover = ColorTranslator.FromHtml("#146B3A");
@@ -33,17 +33,13 @@ namespace Masareefy.Helpers
 
         public const string FontName = "Segoe UI";
 
+        // بيرجع خط Segoe UI بالحجم والوزن المطلوبين.
         public static Font F(float size, bool bold = false)
         {
             return new Font(FontName, size, bold ? FontStyle.Bold : FontStyle.Regular);
         }
 
-        /// <summary>
-        /// Arabic label. With RightToLeft = Yes:
-        /// - Align.Start shows text on the RIGHT (المحاذاة الطبيعية للعربية)
-        /// - Align.End shows text on the LEFT
-        /// - Align.Center centers the text
-        /// </summary>
+        /// <summary>بينشئ Label عربي بالمحاذاة واللون والحجم المطلوبين.</summary>
         public static Label Lbl(string text, float size = 10f, bool bold = false, Color? color = null, Align align = Align.Start)
         {
             var l = new Label();
@@ -53,21 +49,19 @@ namespace Masareefy.Helpers
             l.BackColor = Color.Transparent;
             l.RightToLeft = RightToLeft.Yes;
             l.AutoSize = false;
-            // With RTL: Start = Right, End = Left, Center = Center
+            // المحاذاة بتتحدد حسب اتجاه الكتابة من اليمين للشمال.
             if (align == Align.Center) l.TextAlign = ContentAlignment.MiddleCenter;
-            else if (align == Align.End) l.TextAlign = ContentAlignment.MiddleLeft;  // End = Left with RTL
-            else l.TextAlign = ContentAlignment.MiddleRight;  // Start = Right with RTL
+            else if (align == Align.End) l.TextAlign = ContentAlignment.MiddleLeft;
+            else l.TextAlign = ContentAlignment.MiddleRight;
             return l;
         }
 
-        /// <summary>
-        /// Docking rule in WinForms: add the Fill control FIRST, then the Top controls
-        /// from bottom to top (the last one added ends up at the very top).
-        /// </summary>
+        /// <summary>بيرتب عنصر Fill والعناوين اللي فوقه.</summary>
         public static void DockStack(Control parent, Control fill, params Control[] topToBottom)
         {
             parent.Controls.Add(fill);
             fill.Dock = DockStyle.Fill;
+            // بنضيف العناوين بالعكس عشان أول عنوان يفضل فوق.
             for (int i = topToBottom.Length - 1; i >= 0; i--)
             {
                 topToBottom[i].Dock = DockStyle.Top;
@@ -75,7 +69,7 @@ namespace Masareefy.Helpers
             }
         }
 
-        /// <summary>The page title bar (like the design): title on the LEFT, optional control on the RIGHT.</summary>
+        /// <summary>بيبني شريط عنوان ومعاه عنصر اختياري على الطرف التاني.</summary>
         public static Panel Header(string title, Control rightSide = null)
         {
             var h = new Panel();
@@ -93,7 +87,7 @@ namespace Masareefy.Helpers
             return h;
         }
 
-        /// <summary>Same look for every table.</summary>
+        /// <summary>بيوحد ألوان وخطوط وسلوك الجداول.</summary>
         public static void StyleGrid(DataGridView g)
         {
             g.BorderStyle = BorderStyle.None;
@@ -125,12 +119,12 @@ namespace Masareefy.Helpers
             g.DefaultCellStyle.SelectionForeColor = Ink;
             g.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             g.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            // smoother painting (property is protected, so we use reflection)
+            // بنفعل الرسم المزدوج عشان نقلل الوميض.
             typeof(DataGridView).InvokeMember("DoubleBuffered",
                 BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetProperty, null, g, new object[] { true });
         }
 
-        /// <summary>First parent that has a solid color (used to paint rounded corners).</summary>
+        /// <summary>بيدور على لون خلفية ثابت عشان يرسم الحواف صح.</summary>
         public static Color Backdrop(Control c)
         {
             Control p = c.Parent;
