@@ -60,26 +60,12 @@ namespace Masareefy.Forms
             _error.Visible = false;
             Controls.Add(_error);
 
-            var login = new RoundedButton
-            {
-                Text = "تسجيل الدخول",
-                Fill = Color.Transparent,
-                HoverFill = Color.Transparent,
-                TextColor = Theme.Primary,
-                Stroke = Color.Transparent
-            };
+            var login = new RoundedButton { Text = "تسجيل الدخول", BackColor = Theme.Bg };
             login.SetBounds(60, 330, 360, 46);
             login.Click += (sender, args) => Login();
             Controls.Add(login);
 
-            var signUp = new RoundedButton
-            {
-                Text = "إنشاء حساب",
-                Fill = Color.Transparent,
-                HoverFill = Color.Transparent,
-                TextColor = Theme.Primary,
-                Stroke = Color.Transparent
-            };
+            var signUp = new RoundedButton { Text = "إنشاء حساب", BackColor = Theme.Bg };
             signUp.SetBounds(60, 390, 170, 42);
             signUp.Click += (sender, args) =>
             {
@@ -88,14 +74,7 @@ namespace Masareefy.Forms
             };
             Controls.Add(signUp);
 
-            var forgotPassword = new RoundedButton
-            {
-                Text = "نسيت كلمة المرور؟",
-                Fill = Color.Transparent,
-                HoverFill = Color.Transparent,
-                TextColor = Theme.Primary,
-                Stroke = Color.Transparent
-            };
+            var forgotPassword = new RoundedButton { Text = "نسيت كلمة المرور؟", BackColor = Theme.Bg };
             forgotPassword.SetBounds(250, 390, 170, 42);
             forgotPassword.Click += (sender, args) =>
             {

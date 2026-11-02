@@ -39,7 +39,8 @@ namespace Masareefy.Controls
             var fill = _hover ? HoverFill : Fill;
             if (fill.A > 0 || Stroke.A > 0)
             {
-                using (var path = GfxPath.Round(new Rectangle(0, 0, Width - 1, Height - 1), Radius))
+                var bounds = new Rectangle(1, 1, Width - 3, Height - 3);
+                using (var path = GfxPath.Round(bounds, Radius))
                 {
                     if (fill.A > 0)
                         using (var b = new SolidBrush(fill)) g.FillPath(b, path);
@@ -49,10 +50,8 @@ namespace Masareefy.Controls
                     }
                 }
             }
-            // Fix text rendering: remove EndEllipsis and add WordBreak for proper display
             TextRenderer.DrawText(g, Text, Font, ClientRectangle, TextColor,
-                TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter |
-                TextFormatFlags.RightToLeft | TextFormatFlags.WordBreak);
+                TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
         }
     }
 }
