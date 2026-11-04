@@ -77,7 +77,7 @@ namespace Masareefy.Views
         {
             var card = new RoundedPanel { Dock = DockStyle.Fill, Padding = new Padding(16), Margin = new Padding(8) };
             var donut = new DonutChart { Slices = slices, MinimumSize = new Size(120, 120), Dock = DockStyle.Fill };
-            var legend = new LegendList { Width = 150, Padding = new Padding(0, 8, 0, 0), Dock = DockStyle.Right, AutoScroll = true };
+            var legend = new LegendList { Width = 230, Padding = new Padding(0, 8, 0, 0), Dock = DockStyle.Right, AutoScroll = true };
             legend.SetItems(slices);
             var heading = Theme.Lbl(title, 12, true, Theme.Ink, Align.Start);
             heading.Height = 36;
