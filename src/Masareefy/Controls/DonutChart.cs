@@ -28,7 +28,7 @@ namespace Masareefy.Controls
         {
             var g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
-            int size = Math.Min(Width, Height) - 16;
+            int size = Math.Min(Width, Height) - 24;
             if (size < 50 || Slices == null || Slices.Count == 0) return; // Increased minimum from 30 to 50
             double total = Slices.Sum(s => s.Value);
             if (total <= 0) return;

@@ -22,6 +22,9 @@ namespace Masareefy.Controls
         protected override void OnPaint(PaintEventArgs e)
         {
             var g = e.Graphics;
+            var background = Theme.Backdrop(this);
+            using (var brush = new SolidBrush(background))
+                g.FillRectangle(brush, ClientRectangle);
             g.SmoothingMode = SmoothingMode.AntiAlias;
             using (var path = GfxPath.Round(new Rectangle(0, 0, Width - 1, Height - 1), Radius))
             using (var b = new SolidBrush(Fill))

@@ -18,7 +18,7 @@ namespace Masareefy.Forms
         public LoginForm()
         {
             Text = "Masareefy - تسجيل الدخول";
-            ClientSize = new Size(480, 480);
+            ClientSize = new Size(600, 700);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;
@@ -28,45 +28,45 @@ namespace Masareefy.Forms
             RightToLeft = RightToLeft.Yes;
 
             var title = Theme.Lbl("أهلًا بك في مصاريفي", 20, true, Theme.Ink, Align.Center);
-            title.SetBounds(40, 35, 400, 55);
+            title.SetBounds(50, 55, 500, 70);
             Controls.Add(title);
             var subtitle = Theme.Lbl("سجّل الدخول لمتابعة مصاريفك", 10, false, Theme.Muted, Align.Center);
-            subtitle.SetBounds(40, 88, 400, 32);
+            subtitle.SetBounds(50, 130, 500, 42);
             Controls.Add(subtitle);
 
             var userLabel = Theme.Lbl("اسم المستخدم", 10, true);
-            userLabel.SetBounds(60, 140, 360, 25);
+            userLabel.SetBounds(70, 205, 460, 32);
             Controls.Add(userLabel);
-            _userName.SetBounds(60, 168, 360, 34);
+            _userName.SetBounds(70, 242, 460, 48);
             _userName.Font = Theme.F(11);
             _userName.RightToLeft = RightToLeft.Yes;
             Controls.Add(_userName);
 
             var passwordLabel = Theme.Lbl("كلمة المرور", 10, true);
-            passwordLabel.SetBounds(60, 218, 360, 25);
+            passwordLabel.SetBounds(70, 325, 460, 32);
             Controls.Add(passwordLabel);
-            _password.SetBounds(60, 246, 320, 34);
+            _password.SetBounds(70, 362, 408, 48);
             _password.Font = Theme.F(11);
             _password.UseSystemPasswordChar = true;
             _password.RightToLeft = RightToLeft.Yes;
             Controls.Add(_password);
             var revealPassword = new PasswordVisibilityToggle(_password);
-            revealPassword.SetBounds(385, 246, 35, 34);
+            revealPassword.SetBounds(484, 362, 46, 48);
             Controls.Add(revealPassword);
 
-            _error.SetBounds(60, 286, 360, 28);
+            _error.SetBounds(70, 430, 460, 36);
             _error.ForeColor = Theme.Danger;
             _error.TextAlign = ContentAlignment.MiddleCenter;
             _error.Visible = false;
             Controls.Add(_error);
 
             var login = new RoundedButton { Text = "تسجيل الدخول", BackColor = Theme.Bg };
-            login.SetBounds(60, 330, 360, 46);
+            login.SetBounds(70, 495, 460, 62);
             login.Click += (sender, args) => Login();
             Controls.Add(login);
 
             var signUp = new RoundedButton { Text = "إنشاء حساب", BackColor = Theme.Bg };
-            signUp.SetBounds(60, 390, 170, 42);
+            signUp.SetBounds(70, 580, 220, 58);
             signUp.Click += (sender, args) =>
             {
                 using (var form = new SignUpForm())
@@ -75,7 +75,7 @@ namespace Masareefy.Forms
             Controls.Add(signUp);
 
             var forgotPassword = new RoundedButton { Text = "نسيت كلمة المرور؟", BackColor = Theme.Bg };
-            forgotPassword.SetBounds(250, 390, 170, 42);
+            forgotPassword.SetBounds(310, 580, 220, 58);
             forgotPassword.Click += (sender, args) =>
             {
                 using (var form = new ForgotPasswordForm())

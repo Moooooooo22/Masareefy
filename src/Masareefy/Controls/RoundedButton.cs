@@ -35,6 +35,9 @@ namespace Masareefy.Controls
         protected override void OnPaint(PaintEventArgs pevent)
         {
             var g = pevent.Graphics;
+            var background = Theme.Backdrop(this);
+            using (var brush = new SolidBrush(background))
+                g.FillRectangle(brush, ClientRectangle);
             g.SmoothingMode = SmoothingMode.AntiAlias;
             var fill = _hover ? HoverFill : Fill;
             if (fill.A > 0 || Stroke.A > 0)

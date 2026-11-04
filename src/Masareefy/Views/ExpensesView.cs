@@ -14,18 +14,15 @@ namespace Masareefy.Views
     /// <summary>صفحة المصاريف: بحث وفلاتر وجدول وإضافة وتعديل وحذف.</summary>
     public class ExpensesView : BaseView
     {
-        private const int PageSize = 5;
-
         private readonly DataGridView _grid = new DataGridView();
         private readonly TextBox _search = new TextBox();
         private readonly ComboBox _cat = new ComboBox();
         private readonly DateTimePicker _from = new DateTimePicker();
         private readonly DateTimePicker _to = new DateTimePicker();
         private readonly Label _summary;
-        private readonly Panel _pager = new Panel();
         private List<Expense> _filtered = new List<Expense>();
-        private int _page = 1;
         private bool _loading;
+        private int _loadedVersion = -1;
 
         // بنجهز الفلاتر والجدول وأزرار التنقل بين الصفحات.
         public ExpensesView()
@@ -67,16 +64,14 @@ namespace Masareefy.Views
             flow.Controls.Add(lblTo); flow.Controls.Add(_to);
             filters.Controls.Add(flow); flow.Dock = DockStyle.Fill;
 
-            // أسفل الجدول: صفحات وملخص وزر التصدير.
+            // أسفل الجدول: ملخص النتائج وزر التصدير.
             var footer = new Panel { Height = 58, BackColor = Color.Transparent, Padding = new Padding(0, 10, 0, 0) };
             var export = new RoundedButton { Text = "تصدير إلى CSV", Width = 180 };
             export.Click += (s, e) => MessageBox.Show("تصدير CSV (في الخلفية) هيتعمل في خطوة الـ Threading.", "Masareefy",
                 MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.RtlReading | MessageBoxOptions.RightAlign);
             _summary = Theme.Lbl("", 10, false, Theme.Muted, Align.End);
-            _pager.Width = 230; _pager.BackColor = Color.Transparent;
             footer.Controls.Add(_summary); _summary.Dock = DockStyle.Fill;
             footer.Controls.Add(export); export.Dock = DockStyle.Right;
-            footer.Controls.Add(_pager); _pager.Dock = DockStyle.Left;
 
             BuildGrid();
 
@@ -86,10 +81,10 @@ namespace Masareefy.Views
 
             Theme.DockStack(this, body, header);
 
-            _search.TextChanged += (s, e) => { _page = 1; LoadData(); };
-            _cat.SelectedIndexChanged += (s, e) => { _page = 1; LoadData(); };
-            _from.ValueChanged += (s, e) => { _page = 1; LoadData(); };
-            _to.ValueChanged += (s, e) => { _page = 1; LoadData(); };
+            _search.TextChanged += (s, e) => LoadData();
+            _cat.SelectedIndexChanged += (s, e) => LoadData();
+            _from.ValueChanged += (s, e) => LoadData();
+            _to.ValueChanged += (s, e) => LoadData();
             LoadData();
         }
 
@@ -181,57 +176,22 @@ namespace Masareefy.Views
                 .OrderByDescending(x => x.Date).ThenByDescending(x => x.Id)
                 .ToList();
 
-            int pages = Math.Max(1, (int)Math.Ceiling(_filtered.Count / (double)PageSize));
-            if (_page > pages) _page = pages;
-
             _grid.Rows.Clear();
-            foreach (var x in _filtered.Skip((_page - 1) * PageSize).Take(PageSize))
+            foreach (var x in _filtered)
             {
                 int i = _grid.Rows.Add("", x.Amount.ToString("N0"), x.CategoryName, x.Description, x.Date.ToString("dd/MM/yyyy"), x.Id);
                 _grid.Rows[i].Tag = x;
             }
 
-            int first = _filtered.Count == 0 ? 0 : (_page - 1) * PageSize + 1;
-            int last = Math.Min(_page * PageSize, _filtered.Count);
-            _summary.Text = "عرض " + first + "-" + last + " من " + _filtered.Count + " نتيجة";
-            BuildPager(pages);
+            _summary.Text = "عدد النتائج: " + _filtered.Count;
+            _loadedVersion = SampleData.ExpensesVersion;
             _loading = false;
         }
 
         public void RefreshData()
         {
-            _page = 1;
+            if (_loadedVersion == SampleData.ExpensesVersion) return;
             LoadData();
-        }
-
-        // بيبني أزرار الصفحات حسب عدد النتائج.
-        private void BuildPager(int pages)
-        {
-            _pager.Controls.Clear();
-            int x = 0;
-            _pager.Controls.Add(PageButton("‹", x, _page > 1, () => { _page--; LoadData(); })); x += 40;
-            for (int p = 1; p <= pages; p++)
-            {
-                int page = p;
-                _pager.Controls.Add(PageButton(p.ToString(), x, true, () => { _page = page; LoadData(); }, p == _page)); x += 40;
-            }
-            _pager.Controls.Add(PageButton("›", x, _page < pages, () => { _page++; LoadData(); }));
-        }
-
-        // بيجهز زر صفحة ويربطه بالحركة المطلوبة.
-        private RoundedButton PageButton(string text, int x, bool enabled, Action click, bool active = false)
-        {
-            var b = new RoundedButton
-            {
-                Text = text, Location = new Point(x, 4), Size = new Size(34, 34), Radius = 8,
-                Font = Theme.F(10, true), Enabled = enabled,
-                Fill = active ? Theme.Primary : Color.White,
-                HoverFill = active ? Theme.PrimaryHover : Theme.Bg,
-                TextColor = active ? Color.White : (enabled ? Theme.Ink : Theme.Gray),
-                Stroke = active ? Color.Transparent : Theme.Border
-            };
-            b.Click += (s, e) => click();
-            return b;
         }
 
         // بيفتح نافذة الإضافة ويضيف المصروف للبيانات التجريبية.
@@ -243,7 +203,7 @@ namespace Masareefy.Views
                 var r = dlg.Result;
                 r.Id = SampleData.NextExpenseId++;
                 SampleData.Expenses.Add(r);
-                _page = 1;
+                SampleData.ExpensesVersion++;
                 LoadData();
             }
         }
@@ -257,6 +217,7 @@ namespace Masareefy.Views
                 var r = dlg.Result;
                 x.Amount = r.Amount; x.CategoryName = r.CategoryName; x.Date = r.Date;
                 x.Description = r.Description; x.Notes = r.Notes;
+                SampleData.ExpensesVersion++;
                 LoadData();
             }
         }
@@ -269,6 +230,7 @@ namespace Masareefy.Views
                 MessageBoxOptions.RtlReading | MessageBoxOptions.RightAlign);
             if (answer != DialogResult.Yes) return;
             SampleData.Expenses.Remove(x);
+            SampleData.ExpensesVersion++;
             LoadData();
         }
     }

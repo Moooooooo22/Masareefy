@@ -15,6 +15,7 @@ namespace Masareefy.Views
     {
         // الجدول اللي بيعرض بيانات التصنيفات.
         private readonly DataGridView _grid = new DataGridView();
+        private int _loadedVersion = -1;
 
         // بنجهز الجدول وزر الإضافة وأحداث الخلايا.
         public CategoriesView()
@@ -63,11 +64,12 @@ namespace Masareefy.Views
                 int i = _grid.Rows.Add("", c.Percent, c.Spent.ToString("N0"), c.MonthlyBudget.ToString("N0"), "", c.Name, c.Id);
                 _grid.Rows[i].Tag = c;
             }
+            _loadedVersion = SampleData.CategoriesVersion;
         }
 
         public void RefreshData()
         {
-            LoadData();
+            if (_loadedVersion != SampleData.CategoriesVersion) LoadData();
         }
 
         // بيرسم لون التصنيف وشريط نسبة الميزانية.
@@ -142,6 +144,7 @@ namespace Masareefy.Views
                 var r = dlg.Result;
                 r.Id = SampleData.NextCategoryId++;
                 SampleData.Categories.Add(r);
+                SampleData.CategoriesVersion++;
                 LoadData();
             }
         }
@@ -155,6 +158,8 @@ namespace Masareefy.Views
                 var r = dlg.Result;
                 string oldName = c.Name;
                 c.Name = r.Name; c.MonthlyBudget = r.MonthlyBudget; c.ColorValue = r.ColorValue;
+                SampleData.CategoriesVersion++;
+                SampleData.ExpensesVersion++;
                 // بنخلي المصاريف تفضل مرتبطة بالتصنيف بعد تغيير اسمه.
                 foreach (var x in SampleData.Expenses.Where(x => x.CategoryName == oldName)) x.CategoryName = c.Name;
                 LoadData();
@@ -176,6 +181,7 @@ namespace Masareefy.Views
                 MessageBoxOptions.RtlReading | MessageBoxOptions.RightAlign);
             if (answer != DialogResult.Yes) return;
             SampleData.Categories.Remove(c);
+            SampleData.CategoriesVersion++;
             LoadData();
         }
     }

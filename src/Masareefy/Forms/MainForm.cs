@@ -15,6 +15,7 @@ namespace Masareefy.Forms
         private readonly Panel _content = new Panel();
         private readonly Dictionary<string, UserControl> _views = new Dictionary<string, UserControl>();
         private readonly List<NavButton> _navButtons = new List<NavButton>();
+        private UserControl _activeView;
 
         // بنجهز القائمة ونفتح شاشة الهوم.
         public MainForm()
@@ -98,8 +99,12 @@ namespace Masareefy.Forms
                 _views[key] = view;
             }
 
-            foreach (UserControl cachedView in _views.Values)
-                cachedView.Visible = cachedView == view;
+            if (_activeView != view)
+            {
+                if (_activeView != null) _activeView.Visible = false;
+                view.Visible = true;
+                _activeView = view;
+            }
 
             if (view.Parent != _content)
             {
